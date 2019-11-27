@@ -1,45 +1,42 @@
 const store = require("./store");
 
-function getMessages(filterUser) {
+function getUser(filterUser) {
     return new Promise((resolve, reject) => {
         resolve(store.list(filterUser));
     });
 }
 
-function addMessage(chat, user, message){
+function addUser(name){
     return new Promise((resolve, reject) => {
-        if (!chat || !user || !message) {
-            console.error("[MessageController] No hay chat, usuario o mensaje");
+        if (!name) {
+            console.error("[UserController] No hay nombre");
             reject("Los datos son incorrectos");
             return false
         }
-        const fullMessage = {
-            chat: chat,
-            user: user,
-            message: message,
-            date: new Date()
+        const user = {
+            name
         }
-        store.add(fullMessage);
-        resolve(fullMessage);
+        store.add(user);
+        resolve(user);
     });
 }
 
-function updateMessage(id, message){
+function updateUser(id, name){
     return new Promise((resolve, reject) => {
-        if (!id || !message) {
-            console.error("[MessageController] No hay id o mensaje");
+        if (!id || !name) {
+            console.error("[UserController] No hay id o nombre");
             reject("Los datos son incorrectos");
             return false
         }
-        const result = store.updateMessage(id, message);
+        const result = store.update(id, name);
         resolve(result);
     });
 }
 
-function deleteMessage(id){
+function deleteUser(id){
     return new Promise((resolve, reject) => {
         if (!id) {
-            console.error("[MessageController] No hay usuario o mensaje");
+            console.error("[UserController] No hay usuario o mensaje");
             reject("Los datos son incorrectos");
             return false
         }
@@ -54,8 +51,8 @@ function deleteMessage(id){
 }
 
 module.exports = {
-    getMessages,
-    addMessage,
-    updateMessage,
-    deleteMessage
+    getUser,
+    addUser,
+    updateUser,
+    deleteUser
 }

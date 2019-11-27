@@ -1,35 +1,23 @@
 const express = require("express");
-const multer = require("multer");
 const response = require("./../../network/response");
 const controller = require("./controller");
 const router = express.Router();
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + '.jpg') //Appending .jpg
-    }
-});
-  
-const upload = multer({ storage: storage });
-
 router.get("/", function (req, res){
-    const filterMessages = req.query.user || null;
-    controller.getMessages(filterMessages)
-    .then((messageList) => {
-        response.success(req, res, messageList, 200);
+    const filterUser = req.query.name || null;
+    controller.getUser(filterUser)
+    .then((userList) => {
+        response.success(req, res, userList, 200);
     })
     .catch(e => {
         response.error(req,res, "Unexpected Error", 500, e);
     })
 });
 
-router.post("/", upload.single("file"), function (req, res){
-    controller.addMessage(req.body.chat, req.body.user, req.body.message)
-    .then((fullMessage) => {
-        response.success(req, res, fullMessage);
+router.post("/", function (req, res){
+    controller.addUser(req.body.name)
+    .then((user) => {
+        response.success(req, res, user);
     })
     .catch( e => {
         response.error(req, res, "Información invalida", 400, "Error en el contenido");
@@ -37,7 +25,7 @@ router.post("/", upload.single("file"), function (req, res){
 });
 
 router.patch("/:id", function (req, res){
-    controller.updateMessage(req.params.id, req.body.message)
+    controller.updateUser(req.params.id, req.body.name)
     .then((data) => {
         response.success(req, res, data);
     })
@@ -47,7 +35,7 @@ router.patch("/:id", function (req, res){
 });
 
 router.delete("/:id", function (req, res){
-    controller.deleteMessage(req.params.id)
+    controller.deleteUser(req.params.id)
     .then((data) => {
         response.success(req, res, `Usuario ${req.params.id} eliminado`);
     })
