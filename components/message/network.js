@@ -3,10 +3,11 @@ const multer = require("multer");
 const response = require("./../../network/response");
 const controller = require("./controller");
 const router = express.Router();
+const config = require("../../config");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads/')
+      cb(null, `public${config.fileRoute}/`)
     },
     filename: function (req, file, cb) {
       cb(null, Date.now() + '.jpg') //Appending .jpg
@@ -27,12 +28,12 @@ router.get("/", function (req, res){
 });
 
 router.post("/", upload.single("file"), function (req, res){
-    controller.addMessage(req.body.chat, req.body.user, req.body.message)
+    controller.addMessage(req.body.chat, req.body.user, req.body.message, req.file)
     .then((fullMessage) => {
         response.success(req, res, fullMessage);
     })
     .catch( e => {
-        response.error(req, res, "Información invalida", 400, "Error en el contenido");
+        response.error(req, res, "Información invalida", 400, e);
     });
 });
 

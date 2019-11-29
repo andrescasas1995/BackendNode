@@ -1,17 +1,26 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+const app = express();
+const server = require("http").Server(app);
 
+const config = require("./config");
+
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const socket = require("./socket");
 const db = require("./db");
 const router = require("./network/routers");
-db("mongodb+srv://andrescasas1995:andrescasas1995@cluster0-098rp.mongodb.net/BackendNode");
+db(config.dbURL);
 
-var app = express();
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+socket.connect(server);
+
 router(app);
 
-app.use("/app", express.static("public"));
+app.use(config.publicRoute, express.static("public"));
 
-app.listen(3001);
-console.log("La aplicación está escuchando en http://localhost:3001");
+server.listen(config.port, function() {
+    console.log(`La aplicación está escuchando en ${config.host}:${config.port}`);
+});
