@@ -1,11 +1,21 @@
 const express = require("express");
 const response = require("./../../network/response");
 const controller = require("./controller");
+const config = require("../../config");
 const router = express.Router();
+const auth = require("express-jwt");
+const bcrypt = require("bcrypt");
 
-router.get("/", function (req, res){
+router.get("/", auth(config.auth), function (req, res){
     const filterUser = req.query.name || null;
-    controller.getUser(filterUser)
+    let from = Number(req.query.from) || 0;
+    let limit = Number(req.query.limit) || 5;
+    let cryp = bcrypt.hashSync("andres", 10);
+    console.log(cryp);
+    console.log(bcrypt.compareSync("andre",cryp));
+    console.log(bcrypt.compareSync("andres",cryp));
+    
+    controller.getUser(filterUser, from, limit)
     .then((userList) => {
         response.success(req, res, userList, 200);
     })

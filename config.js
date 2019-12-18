@@ -3,7 +3,10 @@ const config = {
     port: process.env.PORT || 3001,
     host: process.env.HOST || "http://localhost",
     publicRoute: process.env.PUBLIC_ROUTE || "/app",
-    fileRoute: process.env.FILE_ROUTE || "/files"
+    fileRoute: process.env.FILE_ROUTE || "/files",
+    auth: {
+        secret: process.env.SECRET || "platzi"
+    }
 };
 
 module.exports = config;

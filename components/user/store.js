@@ -1,12 +1,16 @@
 const Model = require("./model");
 
-async function getUser(filterUser) {
+async function getUser(filterUser, from, limit) {
     let filter = {};
     if (filterUser !== null) {
         filter = { user: filterUser}
     }    
-    const users = await Model.find(filter);
-    return users;
+    const result = {
+        users: await Model.find(filter, 'name').skip(from).limit(limit),
+        count: await Model.find(filter).count()
+    }
+
+    return result;
 }
 
 function addUser(user) {

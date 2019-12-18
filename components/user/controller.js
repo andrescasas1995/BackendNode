@@ -1,8 +1,8 @@
 const store = require("./store");
 
-function getUser(filterUser) {
+function getUser(filterUser, from, limit) {
     return new Promise((resolve, reject) => {
-        resolve(store.list(filterUser));
+        resolve(store.list(filterUser, from, limit));
     });
 }
 
